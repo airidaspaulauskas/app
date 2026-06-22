@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { LoginForm } from "./login-form";
 import {
   Card,
   CardContent,
@@ -15,26 +14,28 @@ export const metadata = { title: "Sign in" };
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
+      <Link
+        href="/"
+        className="font-serif text-2xl font-semibold tracking-tight"
+      >
+        {APP_NAME}
+      </Link>
       <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <span className="mx-auto font-serif text-xl font-semibold tracking-tight">
-            {APP_NAME}
-          </span>
-          <CardTitle className="pt-2">Sign in</CardTitle>
+        <CardHeader>
+          <CardTitle>Sign in or create an account</CardTitle>
           <CardDescription>
-            Magic-link email sign-in arrives in Milestone 2.
+            Enter your email and we&apos;ll send you a magic link — no password
+            required.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button asChild variant="outline" className="w-full">
-            <Link href="/">
-              <ArrowLeft />
-              Back home
-            </Link>
-          </Button>
+          <LoginForm />
         </CardContent>
       </Card>
+      <p className="max-w-sm text-center text-xs text-muted-foreground">
+        By continuing you agree to our terms and privacy policy.
+      </p>
     </div>
   );
 }

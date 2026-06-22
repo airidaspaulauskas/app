@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
+import type { Database } from "@/types/database";
+
 /**
  * Service-role Supabase client. **Server-only** — bypasses Row Level Security
  * using the service-role key. Use this strictly for trusted server flows that
@@ -7,7 +9,7 @@ import { createClient } from "@supabase/supabase-js";
  * Never import this into client code.
  */
 export function createServiceClient() {
-  return createClient(
+  return createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {

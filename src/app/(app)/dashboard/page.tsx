@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+
+import { requireUser } from "@/lib/auth/session";
 import {
   Card,
   CardContent,
@@ -8,7 +11,10 @@ import {
 
 export const metadata = { title: "Dashboard" };
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const { profile } = await requireUser();
+  if (!profile.onboarded) redirect("/onboarding");
+
   return (
     <div className="space-y-6">
       <div>
@@ -22,15 +28,16 @@ export default function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Coming in Milestone 3</CardTitle>
+          <CardTitle>Subscriptions &amp; charts land in Milestone 3</CardTitle>
           <CardDescription>
-            Total monthly burn, annualized spend, a spend-by-category donut,
-            upcoming renewals, and a sortable subscriptions table land here. This
-            scaffold confirms routing, theming, and the app shell are wired up.
+            Auth, the database schema, RLS, and onboarding are wired up. Total
+            monthly burn, the category donut, upcoming renewals, and the
+            subscriptions table arrive next.
           </CardDescription>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          Auth, the database schema, and onboarding are built in Milestone 2.
+          You&apos;re signed in and onboarded — RLS guarantees you only ever see
+          your own data.
         </CardContent>
       </Card>
     </div>
