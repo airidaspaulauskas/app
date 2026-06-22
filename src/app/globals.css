@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 33% 99%;
+    --foreground: 30 8% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 8% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 8% 10%;
+
+    --primary: 30 8% 12%;
+    --primary-foreground: 40 33% 99%;
+
+    --secondary: 36 12% 95%;
+    --secondary-foreground: 30 8% 12%;
+
+    --muted: 36 12% 95%;
+    --muted-foreground: 30 5% 42%;
+
+    --accent: 36 14% 93%;
+    --accent-foreground: 30 8% 12%;
+
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 40 33% 99%;
+
+    --success: 152 52% 36%;
+    --success-foreground: 40 33% 99%;
+
+    --border: 33 12% 89%;
+    --input: 33 12% 87%;
+    --ring: 30 8% 12%;
+
+    /* Single warm accent — editorial, restrained. */
+    --brand: 22 90% 52%;
+    --brand-foreground: 40 33% 99%;
+
+    /* Donut / category palette. */
+    --chart-1: 22 90% 52%;
+    --chart-2: 199 78% 46%;
+    --chart-3: 152 50% 40%;
+    --chart-4: 262 52% 58%;
+    --chart-5: 334 68% 54%;
+    --chart-6: 41 88% 50%;
+    --chart-7: 218 14% 50%;
+
+    --radius: 0.7rem;
+  }
+
+  .dark {
+    --background: 30 8% 7%;
+    --foreground: 40 18% 94%;
+
+    --card: 30 7% 10%;
+    --card-foreground: 40 18% 94%;
+
+    --popover: 30 7% 10%;
+    --popover-foreground: 40 18% 94%;
+
+    --primary: 40 18% 94%;
+    --primary-foreground: 30 8% 10%;
+
+    --secondary: 30 6% 16%;
+    --secondary-foreground: 40 18% 94%;
+
+    --muted: 30 6% 16%;
+    --muted-foreground: 36 8% 64%;
+
+    --accent: 30 6% 18%;
+    --accent-foreground: 40 18% 94%;
+
+    --destructive: 0 62% 52%;
+    --destructive-foreground: 40 18% 94%;
+
+    --success: 152 46% 46%;
+    --success-foreground: 30 8% 7%;
+
+    --border: 30 6% 18%;
+    --input: 30 6% 20%;
+    --ring: 36 8% 72%;
+
+    --brand: 22 92% 56%;
+    --brand-foreground: 30 8% 7%;
+
+    --chart-1: 22 92% 58%;
+    --chart-2: 199 74% 56%;
+    --chart-3: 152 46% 50%;
+    --chart-4: 262 56% 68%;
+    --chart-5: 334 70% 64%;
+    --chart-6: 41 86% 58%;
+    --chart-7: 218 14% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  /* Tabular figures for money so columns of numbers line up. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
