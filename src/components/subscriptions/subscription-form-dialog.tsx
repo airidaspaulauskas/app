@@ -1,5 +1,9 @@
 "use client";
 
+import * as React from "react";
+
+import type { SmartPasteResult } from "@/lib/ai/types";
+import type { SubscriptionRow } from "@/types/database";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SubscriptionRow } from "@/types/database";
+import { SmartPasteBox } from "./smart-paste-box";
 import {
   SubscriptionForm,
   type SubscriptionFormDefaults,
@@ -25,6 +29,31 @@ export function SubscriptionFormDialog({
   defaultValues?: SubscriptionFormDefaults;
 }) {
   const isEdit = Boolean(subscription);
+  const [prefill, setPrefill] = React.useState<
+    SubscriptionFormDefaults | undefined
+  >(defaultValues);
+  // Bumping this remounts the form so smart-paste results populate the fields.
+  const [formNonce, setFormNonce] = React.useState(0);
+
+  // Reset prefill whenever the dialog is closed so the next open starts clean.
+  React.useEffect(() => {
+    if (!open) {
+      setPrefill(defaultValues);
+      setFormNonce((nonce) => nonce + 1);
+    }
+  }, [open, defaultValues]);
+
+  function handleParsed(result: SmartPasteResult) {
+    setPrefill({
+      name: result.name,
+      category: result.category,
+      cost: result.costUsd ? String(result.costUsd) : "",
+      billingCycle: result.billingCycle,
+      renewalDate: result.renewalDate ?? "",
+      notes: result.notes ?? "",
+    });
+    setFormNonce((nonce) => nonce + 1);
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,13 +65,16 @@ export function SubscriptionFormDialog({
           <DialogDescription>
             {isEdit
               ? "Update the details below."
-              : "Track a tool or service. Annual costs are converted to a monthly figure for you."}
+              : "Paste a receipt to autofill, or enter the details manually. Annual costs are converted to a monthly figure for you."}
           </DialogDescription>
         </DialogHeader>
+
+        {!isEdit && <SmartPasteBox onParsed={handleParsed} />}
+
         <SubscriptionForm
-          key={subscription?.id ?? "create"}
+          key={subscription?.id ?? `create-${formNonce}`}
           subscription={subscription}
-          defaultValues={defaultValues}
+          defaultValues={isEdit ? undefined : prefill}
           onSuccess={() => onOpenChange(false)}
           onCancel={() => onOpenChange(false)}
         />

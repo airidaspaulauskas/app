@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { requireUser } from "@/lib/auth/session";
+import { getLatestInsights } from "@/lib/insights/queries";
 import { getSubscriptions } from "@/lib/subscriptions/queries";
 import { summarize } from "@/lib/subscriptions/summary";
 import { AddSubscriptionButton } from "@/components/subscriptions/add-subscription-button";
@@ -8,6 +9,7 @@ import { EmptySubscriptions } from "@/components/subscriptions/empty-subscriptio
 import { SubscriptionsTable } from "@/components/subscriptions/subscriptions-table";
 import { CategoryDonut } from "@/components/dashboard/category-donut";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
+import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
 import {
   Card,
@@ -25,6 +27,7 @@ export default async function DashboardPage() {
 
   const subscriptions = await getSubscriptions(supabase, user.id);
   const summary = summarize(subscriptions);
+  const insights = await getLatestInsights(supabase, user.id);
 
   return (
     <div className="space-y-8">
@@ -45,6 +48,12 @@ export default async function DashboardPage() {
       ) : (
         <div className="space-y-6">
           <DashboardStats summary={summary} />
+
+          <InsightsPanel
+            planTier={profile.plan_tier}
+            initialPayload={insights}
+            subscriptionCount={summary.count}
+          />
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
