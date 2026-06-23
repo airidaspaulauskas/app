@@ -1,5 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Sparkles } from "lucide-react";
 
+import { FREE_PLAN_SUBSCRIPTION_LIMIT } from "@/config/app";
 import { requireUser } from "@/lib/auth/session";
 import { getLatestInsights } from "@/lib/insights/queries";
 import { getSubscriptions } from "@/lib/subscriptions/queries";
@@ -11,6 +14,7 @@ import { CategoryDonut } from "@/components/dashboard/category-donut";
 import { DashboardStats } from "@/components/dashboard/dashboard-stats";
 import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -28,6 +32,10 @@ export default async function DashboardPage() {
   const subscriptions = await getSubscriptions(supabase, user.id);
   const summary = summarize(subscriptions);
   const insights = await getLatestInsights(supabase, user.id);
+
+  const atFreeLimit =
+    profile.plan_tier === "free" &&
+    summary.count >= FREE_PLAN_SUBSCRIPTION_LIMIT;
 
   return (
     <div className="space-y-8">
@@ -48,6 +56,24 @@ export default async function DashboardPage() {
       ) : (
         <div className="space-y-6">
           <DashboardStats summary={summary} />
+
+          {atFreeLimit && (
+            <div className="flex flex-col items-start gap-3 rounded-lg border border-brand/30 bg-brand/[0.04] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm">
+                You&apos;ve reached the Free limit of{" "}
+                {FREE_PLAN_SUBSCRIPTION_LIMIT} subscriptions.{" "}
+                <span className="text-muted-foreground">
+                  Upgrade to Pro for unlimited tracking.
+                </span>
+              </p>
+              <Button asChild size="sm" variant="brand">
+                <Link href="/billing">
+                  <Sparkles />
+                  Upgrade
+                </Link>
+              </Button>
+            </div>
+          )}
 
           <InsightsPanel
             planTier={profile.plan_tier}
