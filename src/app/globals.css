@@ -35,9 +35,12 @@
     --input: 33 12% 87%;
     --ring: 30 8% 12%;
 
-    /* Single warm accent — editorial, restrained. */
-    --brand: 22 90% 52%;
+    /* Single warm accent — editorial terracotta, dark enough that white text
+       on it clears WCAG AA contrast. */
+    --brand: 18 80% 41%;
     --brand-foreground: 40 33% 99%;
+
+    color-scheme: light;
 
     /* Donut / category palette. */
     --chart-1: 22 90% 52%;
@@ -83,8 +86,10 @@
     --input: 30 6% 20%;
     --ring: 36 8% 72%;
 
-    --brand: 22 92% 56%;
-    --brand-foreground: 30 8% 7%;
+    --brand: 24 92% 60%;
+    --brand-foreground: 24 35% 9%;
+
+    color-scheme: dark;
 
     --chart-1: 22 92% 58%;
     --chart-2: 199 74% 56%;

@@ -3,6 +3,14 @@ import { cookies } from "next/headers";
 
 import type { Database } from "@/types/database";
 
+/** True when the Supabase env is present (so the client can be constructed). */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
 /**
  * Supabase client for use in Server Components, Server Actions, and Route
  * Handlers. Reads/writes the session from cookies. Still uses the anon key, so

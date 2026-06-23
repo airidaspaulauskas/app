@@ -2,20 +2,17 @@ import { NextResponse } from "next/server";
 
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateInsights } from "@/lib/ai/insights";
-import { getOrCreateProfile } from "@/lib/auth/session";
+import { getOptionalUser, getOrCreateProfile } from "@/lib/auth/session";
 import { saveInsights } from "@/lib/insights/queries";
 import { getSubscriptions } from "@/lib/subscriptions/queries";
-import { createClient } from "@/lib/supabase/server";
 
 /** Regenerate and cache AI insights. Pro-gated; requires ≥2 subscriptions. */
 export async function POST() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const auth = await getOptionalUser();
+  if (!auth) {
     return NextResponse.json({ error: "Please sign in." }, { status: 401 });
   }
+  const { supabase, user } = auth;
 
   const profile = await getOrCreateProfile(supabase, user);
   if (profile.plan_tier !== "pro") {

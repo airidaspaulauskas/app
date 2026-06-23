@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
 
-import { getOrCreateProfile } from "@/lib/auth/session";
+import { getOptionalUser, getOrCreateProfile } from "@/lib/auth/session";
 import { getStripe, isStripeConfigured } from "@/lib/stripe/client";
-import { createClient } from "@/lib/supabase/server";
 
 /** Create a Stripe Checkout session for the Pro plan and return its URL. */
 export async function POST() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const auth = await getOptionalUser();
+  if (!auth) {
     return NextResponse.json({ error: "Please sign in." }, { status: 401 });
   }
+  const { supabase, user } = auth;
 
   if (!isStripeConfigured()) {
     return NextResponse.json(

@@ -3,18 +3,15 @@ import { z } from "zod";
 
 import { isAiConfigured } from "@/lib/ai/client";
 import { parseSubscriptionText } from "@/lib/ai/smart-paste";
-import { createClient } from "@/lib/supabase/server";
+import { getOptionalUser } from "@/lib/auth/session";
 
 const bodySchema = z.object({
   text: z.string().trim().min(1).max(6000),
 });
 
 export async function POST(request: Request) {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const auth = await getOptionalUser();
+  if (!auth) {
     return NextResponse.json({ error: "Please sign in." }, { status: 401 });
   }
 
