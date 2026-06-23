@@ -16,6 +16,14 @@ export type SignInState = {
   email?: string;
 };
 
+/** Turn low-level transport errors into an actionable message. */
+function friendlyAuthError(raw: string): string {
+  if (/not valid json|unexpected token|failed to fetch|fetch failed|<!doctype/i.test(raw)) {
+    return "Couldn't reach Supabase. Check that NEXT_PUBLIC_SUPABASE_URL is your project's API URL (looks like https://YOUR-REF.supabase.co), then redeploy.";
+  }
+  return raw || "Couldn't send the sign-in link. Please try again.";
+}
+
 /**
  * Sends a magic-link sign-in email. Returns state for the form to render
  * (success → "check your email", or a validation/transport error). Never
@@ -55,7 +63,7 @@ export async function signInWithEmail(
     if (error) {
       return {
         status: "error",
-        message: error.message,
+        message: friendlyAuthError(error.message),
         email: parsed.data.email,
       };
     }
@@ -65,7 +73,10 @@ export async function signInWithEmail(
     console.error("signInWithEmail failed", error);
     return {
       status: "error",
-      message: "Couldn't send the sign-in link. Please try again.",
+      message: friendlyAuthError(
+        error instanceof Error ? error.message : "",
+      ),
+      email: parsed.data.email,
     };
   }
 }
