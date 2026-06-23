@@ -1,14 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
+
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  // Until Supabase env is configured, skip session refresh so the app still
-  // boots locally. Once NEXT_PUBLIC_SUPABASE_URL is set, sessions refresh here.
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  // Skip session refresh until BOTH public Supabase vars are present — a
+  // partial config would otherwise throw when constructing the client.
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
     return NextResponse.next({ request });
   }
 
-  return updateSession(request);
+  // Session refresh is best-effort. If it throws (bad env, transport error,
+  // edge-runtime quirk), never 500 the entire site — fall through and let each
+  // route's own server-side guard (requireUser) handle auth.
+  try {
+    return await updateSession(request);
+  } catch (error) {
+    console.error("middleware session refresh failed; continuing", error);
+    return NextResponse.next({ request });
+  }
 }
 
 export const config = {
