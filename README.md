@@ -127,6 +127,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm start`     | Run the production build                 |
 | `pnpm lint`      | ESLint (next/core-web-vitals + TS rules) |
 | `pnpm typecheck` | `tsc --noEmit` (strict)                  |
+| `pnpm test`      | Vitest unit tests (money, summary, parsing) |
 
 ## Project structure
 
